@@ -59,46 +59,11 @@ Add a custom feature that highlights your skills in **C#**. Ideas include (but a
 
 ---
 
-## 🛠️ Setup Guide
-
-### Frontend
-```bash
-# Launch index.html with any local server or browser
-open index.html
-```
-
-### Backend
-```bash
-cd backend/
-dotnet restore
-dotnet build
-dotnet run
-```
-
 ### Database
 - Use SQL Server (Express or LocalDB)
 - Run schema script or let EF Core generate tables
 - Update your connection string in `appsettings.Development.json`
 
----
-
-## 📁 Suggested Folder Structure
-
-```
-├── frontend/
-│   ├── index.html
-│   ├── app.js
-│   └── style.ts
-├── backend/
-│   ├── Controllers/
-│   ├── Models/
-│   ├── Data/
-│   ├── Services/
-│   └── Program.cs
-├── README.md
-├── .env.sample
-└── todo_schema.sql
-```
 
 ---
 
