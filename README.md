@@ -11,7 +11,7 @@ This application manages to-do items with full **CRUD** capabilities: Create, Re
 
 - `index.html`
 - `app.js`
-- `style.ts`
+- `style.css`
 
 Your objective is to complete the application by implementing:
 
