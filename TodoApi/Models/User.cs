@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace TodoApi.Models
 {
@@ -15,7 +16,7 @@ namespace TodoApi.Models
 
         public string PasswordHash { get; set; } = string.Empty;
 
-
+        [JsonIgnore]
         public ICollection<Todo>? Todos { get; set; }
 
 
