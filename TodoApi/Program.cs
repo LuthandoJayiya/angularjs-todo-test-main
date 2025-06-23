@@ -59,7 +59,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowOrigin",
     builder =>
     {
-        builder.WithOrigins("http://127.0.0.1:5500", "http://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+        builder.WithOrigins("https://angularjs-todo-test-main.vercel.app", "http://127.0.0.1:5500", "http://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
     });
 });
 
