@@ -11,9 +11,7 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   {path: 'dashboard', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule), canActivate: [AuthGuard]},
   { path: '', redirectTo: '/login', pathMatch: 'full' },
-  {path: '**', redirectTo: '/login' },
-  {path : 'tasks', component:TasksComponent, canActivate: [AuthGuard]}
-
+  {path: '**', redirectTo: '/login' }
 ];
 
 @NgModule({
