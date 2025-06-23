@@ -1,0 +1,51 @@
+/* task-modal.component.css */
+
+/* Keyframe animations for modal entry */
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Apply animations */
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.2s ease-out;
+}
+
+/* Custom scrollbar for webkit browsers (e.g., Chrome, Safari) */
+/* This ensures scrollbars match the modal's aesthetic */
+::-webkit-scrollbar {
+  width: 4px; /* Width of the vertical scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1); /* Track background */
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3); /* Scrollbar thumb color */
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5); /* Scrollbar thumb color on hover */
+}

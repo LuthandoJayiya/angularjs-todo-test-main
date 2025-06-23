@@ -1,0 +1,20 @@
+<div class="grid grid-cols-1 pb-4 md:grid-cols-2 lg:grid-cols-4 gap-6">
+  <ng-container *ngFor="let card of [
+    {label: 'Total Tasks', value: totalTasks, icon: 'CheckCircle', iconColor: 'var(--accent)'},
+    {label: 'Completed', value: completedTasks, icon: 'CheckCircle', iconColor: 'var(--accent)'},
+    {label: 'In Progress', value: inProgressTasks, icon: 'Clock', iconColor: 'var(--accent)'},
+    {label: 'Completion Rate', value: completionRate + '%', icon: 'TrendingUp', iconColor: 'var(--accent)'}
+  ]">
+    <div class="rounded-2xl p-6" [ngStyle]="{'background': 'var(--card-bg)', 'box-shadow': 'var(--card-shadow)', 'color': 'var(--text-primary)'}">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium" [ngStyle]="{'color': 'var(--text-secondary)'}">{{card.label}}</p>
+          <p class="text-3xl font-bold" [ngStyle]="{'color': 'var(--text-primary)'}">{{card.value}}</p>
+        </div>
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center" [ngStyle]="{'background': 'var(--button-bg)', 'box-shadow': 'var(--button-shadow)'}">
+          <lucide-icon [name]="card.icon" class="w-6 h-6" [ngStyle]="{'color': card.iconColor}" />
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

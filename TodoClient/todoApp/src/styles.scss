@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+  /* Light Theme Defaults (Icy Blue) */
+  --bg: linear-gradient(135deg, #F0F5F8 0%, #E6F0F5 100%);
+  --card-bg: linear-gradient(145deg, #E6F0F5, #F0F5F8);
+  --card-shadow: 6px 6px 12px #cdd9e2, -6px -6px 12px #ffffff;
+  --button-bg: linear-gradient(145deg, #E6F0F5, #F0F5F8);
+  --button-shadow: 4px 4px 8px #cdd9e2, -4px -4px 8px #ffffff;
+  --button-pressed-bg: linear-gradient(145deg, #cdd9e2, #E6F0F5);
+  --button-pressed-shadow: inset 4px 4px 8px #cdd9e2, inset -4px -4px 8px #ffffff;
+  --text-primary: #2F4F6F;
+  --text-secondary: #5A7D9D;
+  --text-muted: #8BA6BE;
+  --accent: #2196F3;
+  --accent-hover: #1976D2;
+  --surface: #F0F5F8;
+  --surface-alt: #E6F0F5;
+}
+
+:root.dark {
+  /* Dark Theme overrides (Icy Blue) when .dark class is present on <html> */
+  --bg: linear-gradient(135deg, #1A2E3D 0%, #294050 100%);
+  --card-bg: linear-gradient(145deg, #294050, #1A2E3D);
+  --card-shadow: 6px 6px 12px #101B24, -6px -6px 12px #3c5d76;
+  --button-bg: linear-gradient(145deg, #294050, #1A2E3D);
+  --button-shadow: 4px 4px 8px #101B24, -4px -4-px 8px #3c5d76;
+  --button-pressed-bg: linear-gradient(145deg, #101B24, #294050);
+  --button-pressed-shadow: inset 4px 4px 8px #101B24, inset -4px -4px 8px #3c5d76;
+  --text-primary: #EBF2F7;
+  --text-secondary: #C8D8E5;
+  --text-muted: #9ABDD4;
+  --accent: #2196F3;
+  --accent-hover: #42A5F5;
+  --surface: #1A2E3D;
+  --surface-alt: #294050;
+}

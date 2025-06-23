@@ -50,7 +50,7 @@ namespace TodoApi.Controllers
         public IActionResult Login(LoginRequest request)
         {
             var user = _context.Users.FirstOrDefault(u =>
-                u.Username.ToLower() == request.Username.ToLower());
+                u.Email.ToLower() == request.Email.ToLower());
 
             if (user == null || !_authService.VerifyPassword(request.Password, user.PasswordHash))
                 return Unauthorized("Invalid username or password.");

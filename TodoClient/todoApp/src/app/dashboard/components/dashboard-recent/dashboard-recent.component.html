@@ -1,0 +1,22 @@
+<div class="rounded-2xl p-6" [ngStyle]="{'background': 'var(--card-bg)', 'box-shadow': 'var(--card-shadow)', 'color': 'var(--text-primary)'}">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="text-lg font-semibold" [ngStyle]="{'color': 'var(--text-primary)'}">Recent Tasks</h3>
+    <button class="px-3 py-1 rounded-lg text-sm" [ngStyle]="{'color': 'var(--text-secondary)', 'background': 'var(--button-bg)', 'box-shadow': 'var(--button-shadow)'}" 
+            (mouseenter)="hover=true" (mouseleave)="hover=false" [ngClass]="{'hover:text-gray-800': hover}">View All</button>
+  </div>
+  <div class="space-y-3">
+    <div *ngFor="let t of tasks" class="rounded-xl p-4 inset-shadow" [ngStyle]="{'background': 'var(--card-bg)'}">
+      <div class="flex items-center justify-between mb-2">
+        <h4 class="font-medium" [ngStyle]="{'color': 'var(--text-primary)'}">{{t.title}}</h4>
+        <span class="px-2 py-1 rounded-full text-xs font-medium" [ngClass]="getStatusColor(t.status)">
+          {{t.status | titlecase}}
+        </span>
+      </div>
+      <p class="text-sm mb-2" [ngStyle]="{'color': 'var(--text-secondary)'}">{{t.description}}</p>
+      <div class="flex items-center justify-between text-xs" [ngStyle]="{'color': 'var(--text-muted)'}">
+        <span>{{t.category}}</span>
+        <span>{{t.dueDate | date:'MMM d'}}</span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,26 @@
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <ng-container *ngFor="let group of [
+    { title: 'Task Status', data: taskStatusData },
+    { title: 'Priority Distribution', data: priorityData }
+  ]">
+    <div class="rounded-2xl p-6" [ngStyle]="{'background': 'var(--card-bg)', 'box-shadow': 'var(--card-shadow)', 'color': 'var(--text-primary)'}">
+      <h3 class="text-lg font-semibold mb-4" [ngStyle]="{'color': 'var(--text-primary)'}">{{group.title}}</h3>
+      <div class="space-y-4">
+        <div *ngFor="let item of group.data; index as i" class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="w-4 h-4 rounded-full mr-3" [style.backgroundColor]="item.color"></div>
+            <span [ngStyle]="{'color': 'var(--text-secondary)'}">{{item.name}}</span>
+          </div>
+          <div class="flex items-center">
+            <span class="font-semibold mr-2" [ngStyle]="{'color': 'var(--text-primary)'}">{{item.value}}</span>
+            <div class="w-24 h-2 rounded-full inset-shadow" [ngStyle]="{'background': 'var(--surface-alt)'}">
+              <div class="h-2 rounded-full transition-all duration-500"
+                   [style.width]="(item.value/totalTasks)*100 + '%'"
+                   [style.backgroundColor]="item.color"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

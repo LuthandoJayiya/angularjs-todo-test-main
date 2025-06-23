@@ -1,0 +1,100 @@
+<div
+  class="fixed pt-2 top-0 left-0 h-full z-50 transition-all duration-300 ease-in-out"
+  [ngClass]="collapsed ? 'w-16' : 'w-64'"
+  appTheme="surface"
+>
+  <div
+    class="h-full relative p-4 rounded-r-3xl glass-container"
+    [ngClass]="collapsed ? 'px-2' : 'px-4'"
+    appTheme="card"
+  >
+    <button
+      (click)="toggleCollapseClick()"
+      class="toggle-btn absolute top-4 right-4 p-2 rounded-full shadow transition bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 z-[100] hover:scale-110 active:scale-95"
+      appTheme="button"
+    >
+      <lucide-icon
+        [name]="collapsed ? 'Menu' : 'X'"
+        class="w-5 h-5"
+        [ngStyle]="{ color: 'var(--text-primary)' }"
+      />
+    </button>
+
+    <div
+      class="flex items-center mb-8 logo-container"
+      [ngClass]="{ 'justify-center': collapsed }"
+    >
+      <div
+        class="w-10 h-10 rounded-xl flex items-center justify-center glass-container"
+      >
+        <lucide-icon
+          name="CheckCircle"
+          class="w-6 h-6"
+          [ngStyle]="{ color: 'var(--accent)' }"
+        />
+      </div>
+      <h2
+        class="text-xl font-bold ml-3 transition-opacity duration-300 whitespace-nowrap"
+        [ngClass]="collapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'"
+        [ngStyle]="{ color: 'var(--text-primary)' }"
+      >
+        TaskFlow
+      </h2>
+    </div>
+
+    <nav class="space-y-3">
+      <button
+        *ngFor="let item of navItems"
+        (click)="toggleTabClick(item.id)"
+        class="nav-item w-full flex items-center p-3 rounded-xl transition-all duration-200"
+        [ngClass]="{'active': activeTab === item.id, 'justify-center': collapsed}"
+        appTheme="button"
+      >
+        <lucide-icon
+          [name]="item.icon"
+          class="nav-icon w-5 h-5"
+          [ngStyle]="{color:activeTab === item.id ? 'var(--accent)' : 'var(--text-primary)'}"
+        />
+        <span
+          class="nav-text ml-3 transition-opacity duration-300 whitespace-nowrap"
+          [ngClass]="collapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'"
+        >
+          {{ item.label }}
+        </span>
+      </button>
+    </nav>
+
+    <div
+      class="absolute bottom-4"
+      [ngClass]="collapsed ? 'left-2 right-2' : 'left-4 right-4'"
+    >
+      <div
+        class="profile-section p-3 rounded-xl flex items-center"
+        [ngClass]="{ 'justify-center': collapsed }"
+      >
+        <div
+          class="w-10 h-10 rounded-full flex items-center justify-center glass-container"
+        >
+          <lucide-icon
+            name="Users"
+            class="w-6 h-6"
+            [ngStyle]="{ color: 'var(--text-primary)' }"
+          />
+        </div>
+        <div
+          class="ml-3 transition-opacity duration-300"
+          [ngClass]="
+            collapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'
+          "
+        >
+          <p class="text-sm font-medium" [ngStyle]="{ color: 'var(--accent)' }">
+            John Doe
+          </p>
+          <p class="text-xs" [ngStyle]="{ color: 'var(--text-primary)' }">
+            Admin
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,179 @@
+<div class="card" class="rounded-2xl items-center justify-between backdrop-blur-xl"
+    [ngStyle]="{
+      background: theme.cardBg,
+      boxShadow: theme.cardShadow,
+      color: theme.textPrimary
+    }">
+  <div class="min-h-screen px-4 py-6 md:px-8" appTheme="surface">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold text-[var(--text-primary)]">Task Management</h1>
+      <button
+        class="flex items-center gap-2 bg-[var(--button-bg)] text-[var(--text-primary)] px-4 py-2 rounded-xl shadow transition hover:scale-105"
+        (click)="openAddModal()"
+        appTheme="button"
+      >
+        <lucide-icon name="plus" class="w-5 h-5" />
+        Add New Task
+      </button>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" [ngStyle]="{'background': 'var(--card-bg)', 'box-shadow': 'var(--card-shadow)', 'color': 'var(--text-primary)'}">
+      <div class="rounded-xl p-4 shadow glass-container text-center">
+        <div class="text-3xl font-bold">{{ getTaskStats().total }}</div>
+        <div class="text-sm text-[var(--text-muted)]">Total Tasks</div>
+      </div>
+      <div class="rounded-xl p-4 shadow glass-container text-center" appTheme="card">
+        <div class="text-3xl font-bold">{{ getTaskStats().pending }}</div>
+        <div class="text-sm text-yellow-500">Pending</div>
+      </div>
+      <div class="rounded-xl p-4 shadow glass-container text-center" appTheme="card">
+        <div class="text-3xl font-bold">{{ getTaskStats().inProgress }}</div>
+        <div class="text-sm text-blue-400">In Progress</div>
+      </div>
+      <div class="rounded-xl p-4 shadow glass-container text-center" appTheme="card">
+        <div class="text-3xl font-bold">{{ getTaskStats().completed }}</div>
+        <div class="text-sm text-green-500">Completed</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+      <!-- Search -->
+      <div class="relative w-full md:w-1/2">
+        <input
+          type="text"
+          placeholder="Search tasks..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()"
+          class="w-full px-4 py-2 rounded-xl bg-[var(--surfaceAlt)] shadow text-[var(--text-primary)] pr-10"
+        />
+        <lucide-icon name="search" class="absolute right-3 top-2.5 w-5 h-5 text-[var(--text-muted)]" />
+      </div>
+
+      <!-- Filter -->
+      <div class="w-full md:w-auto">
+        <select
+          [(ngModel)]="filterStatus"
+          (change)="onFilterChange()"
+          class="px-4 py-2 rounded-xl bg-[var(--surfaceAlt)] shadow text-[var(--text-primary)]"
+        >
+          <option value="all">All Status</option>
+          <option value="pending">Pending</option>
+          <option value="in-progress">In Progress</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Task List -->
+    <div class="grid gap-4">
+      <div
+        *ngFor="let task of filteredTasks"
+        class="rounded-xl p-4 shadow-lg glass-container flex flex-col md:flex-row justify-between items-start md:items-center"
+        appTheme="card"
+      >
+        <!-- Task Content -->
+        <div class="w-full">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
+            <h3
+              class="text-lg font-semibold text-[var(--text-primary)] hover:underline cursor-pointer"
+              (click)="openViewModal(task)"
+            >
+              {{ task.title }}
+            </h3>
+            <div class="flex gap-2 mt-2 md:mt-0">
+              <span
+                class="px-3 py-1 text-xs rounded-full font-medium"
+                [ngClass]="getStatusBadgeClass(task.status)"
+              >
+                {{ task.status | titlecase }}
+              </span>
+              <span
+                class="px-3 py-1 text-xs rounded-full font-medium"
+                [ngClass]="getPriorityBadgeClass(task.priority)"
+              >
+                {{ task.priority | titlecase }}
+              </span>
+            </div>
+          </div>
+          <p class="text-sm text-[var(--text-muted)]">{{ task.description }}</p>
+          <div class="text-xs text-[var(--text-muted)] mt-2 space-x-4">
+            <span>Created: {{ task.createdAt | date : "short" }}</span>
+            <span *ngIf="task.dueDate">Due: {{ task.dueDate | date : "short" }}</span>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex gap-2 mt-4 md:mt-0 md:ml-6">
+          <button
+            *ngIf="task.status === 'pending'"
+            class="p-2 rounded-lg hover:scale-105 transition"
+            title="Start Task"
+            appTheme="button"
+            (click)="startTask(task.id)"
+          >
+            <lucide-icon name="play" class="w-5 h-5" />
+          </button>
+
+          <button
+            *ngIf="task.status !== 'completed'"
+            class="p-2 rounded-lg hover:scale-105 transition"
+            title="Complete Task"
+            appTheme="button"
+            (click)="completeTask(task.id)"
+          >
+            <lucide-icon name="check" class="w-5 h-5" />
+          </button>
+
+          <button
+            class="p-2 rounded-lg hover:scale-105 transition"
+            title="Edit Task"
+            appTheme="button"
+            (click)="openEditModal(task)"
+          >
+            <lucide-icon name="pencil" class="w-5 h-5" />
+          </button>
+
+          <button
+            class="p-2 rounded-lg hover:scale-105 transition"
+            title="Delete Task"
+            appTheme="button"
+            (click)="deleteTask(task.id)"
+          >
+            <lucide-icon name="trash" class="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div
+        *ngIf="filteredTasks.length === 0"
+        class="text-center p-8 rounded-xl glass-container"
+        appTheme="card"
+      >
+        <div class="text-4xl mb-2">📋</div>
+        <h3 class="text-xl font-semibold text-[var(--text-primary)]">No tasks found</h3>
+        <p class="text-sm text-[var(--text-muted)]">
+          {{
+            searchTerm || filterStatus !== 'all'
+              ? 'Try adjusting your filters'
+              : 'Create your first task to get started'
+          }}
+        </p>
+      </div>
+    </div>
+
+    <app-task-modal
+      [isOpen]="modal.isOpen"
+      [mode]="modal.mode"
+      [task]="modal.task"
+      [isLoading]="false"
+      (close)="closeModals()"
+      (create)="addTask($event)"
+      (update)="updateTask($event)"
+      (delete)="deleteTask($event)"
+    ></app-task-modal>
+  </div>
+</div>

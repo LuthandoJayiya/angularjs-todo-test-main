@@ -12,7 +12,7 @@ namespace TodoApi.Controllers
     [Authorize]
     [ApiController]
     [Route("[controller]")]
-    public class TodosController : Controller
+    public class TodosController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
         private readonly TodoService _todoService;
@@ -26,53 +26,87 @@ namespace TodoApi.Controllers
         private Guid GetUserId() => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Todo>>> GetTodos()
+        public async Task<ActionResult<IEnumerable<TodoReadDto>>> GetTodos()
         {
             var userId = GetUserId();
-            var todos = await _context.Todos.Where(t=>t.UserId==userId).ToListAsync();
+
+            var todos = await _context.Todos
+                .Where(t => t.UserId == userId)
+                .Select(t => new TodoReadDto
+                {
+                    Id = t.Id,
+                    Title = t.Title,
+                    Description = t.Description,
+                    Status = t.Status,
+                    Priority = t.Priority,
+                    CreatedAt = t.CreatedAt,
+                    UpdatedAt = t.UpdatedAt,
+                    DueDate = t.DueDate
+                })
+                .ToListAsync();
+
             return Ok(todos);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Todo>> GetTodo(Guid id)
+        public async Task<ActionResult<TodoReadDto>> GetTodo(Guid id)
         {
-            var userID = GetUserId();
-            var todo = await _context.Todos.FirstOrDefaultAsync(t=>t.UserId==userID && t.Id==id);
+            var userId = GetUserId();
+            var todo = await _context.Todos
+                .Where(t => t.Id == id && t.UserId == userId)
+                .Select(t => new TodoReadDto
+                {
+                    Id = t.Id,
+                    Title = t.Title,
+                    Description = t.Description,
+                    Status = t.Status,
+                    Priority = t.Priority,
+                    CreatedAt = t.CreatedAt,
+                    UpdatedAt = t.UpdatedAt,
+                    DueDate = t.DueDate
+                })
+                .FirstOrDefaultAsync();
 
-            if (todo == null) return NotFound("No Todos Founds");
+            if (todo == null)
+                return NotFound("Todo not found");
+
             return Ok(todo);
         }
 
         [HttpPost]
         public async Task<ActionResult<TodoReadDto>> CreateTodo([FromBody] TodoCreateDto dto)
         {
-            var UserId = GetUserId();
-            var results = await _todoService.CreateTodoAsync(UserId, dto);
-            return CreatedAtAction(nameof(GetTodo), new {id=results.Id}, results);
+            var userId = GetUserId();
+            var created = await _todoService.CreateTodoAsync(userId, dto);
+
+            return CreatedAtAction(nameof(GetTodo), new { id = created.Id }, created);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<TodoReadDto>> UpdateTodo(Guid id, [FromBody] TodoUpdateDto dto)
         {
             var userId = GetUserId();
-            var results = await _todoService.UpdateTodoAsync(id, dto, userId);
+            var updated = await _todoService.UpdateTodoAsync(id, dto, userId);
 
-            if (results == null) return NotFound();
+            if (updated == null)
+                return NotFound();
 
-            return Ok(results);
+            return Ok(updated);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTodo(Guid id)
         {
             var userId = GetUserId();
-            var todo = await _context.Todos.FirstOrDefaultAsync(t=>t.Id==id&&t.UserId==userId);
+            var todo = await _context.Todos.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
 
-            if(todo == null) return NotFound();
+            if (todo == null)
+                return NotFound();
 
             _context.Todos.Remove(todo);
             await _context.SaveChangesAsync();
-            return Ok("Deleted todo sucessfully");
+
+            return Ok("Deleted todo successfully");
         }
     }
 }

@@ -1,0 +1,285 @@
+<!-- task-modal.component.html -->
+
+<!-- Modal Backdrop -->
+<!-- The backdrop covers the entire screen, acting as a click-away area -->
+<div
+  *ngIf="isOpen"
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
+  (click)="onBackdropClick($event)"
+>
+  <!-- Glassmorphism Backdrop Effect -->
+  <div class="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
+
+  <!-- Modal Container -->
+  <!-- This is the actual modal content box -->
+  <div class="relative w-full max-w-md transform animate-scale-in">
+    <!-- Glassmorphism Modal Styles -->
+    <div
+      class="relative bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl overflow-hidden"
+    >
+      <!-- Gradient Border Effect (Purely decorative) -->
+      <div
+        class="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/20 via-transparent to-transparent pointer-events-none"
+      ></div>
+
+      <!-- Modal Header -->
+      <div class="relative px-6 py-4 border-b border-white/10">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <!-- Dynamic Icon based on modal mode -->
+            <div
+              class="w-8 h-8 rounded-full flex items-center justify-center"
+              [ngClass]="getHeaderIconClass()"
+            >
+              <!-- SVG Icons: Lucide icons would be better here, but using raw SVG as provided -->
+              <!-- TODO: Consider replacing these with <lucide-icon> components for consistency -->
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  *ngIf="mode === 'create'"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
+                <path
+                  *ngIf="mode === 'view'"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                />
+                <path
+                  *ngIf="mode === 'edit'"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                />
+                <path
+                  *ngIf="mode === 'delete'"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+            </div>
+            <h2 class="text-lg font-semibold text-white">{{ getModalTitle() }}</h2>
+          </div>
+
+          <!-- Close Button -->
+          <button
+            (click)="closeModal()"
+            class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 flex items-center justify-center group"
+          >
+            <!-- Close Icon -->
+            <svg
+              class="w-4 h-4 text-white/70 group-hover:text-white transition-colors"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="relative px-6 py-6">
+        <!-- Create/Edit Form -->
+        <div *ngIf="mode === 'create' || mode === 'edit'" class="space-y-4">
+          <!-- Title Field -->
+          <div>
+            <label class="block text-sm font-medium text-white/80 mb-2">Title</label>
+            <input
+              type="text"
+              [(ngModel)]="taskData.title"
+              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-transparent backdrop-blur-sm transition-all duration-200"
+              placeholder="Enter task title..."
+              [disabled]="isLoading"
+            />
+          </div>
+
+          <!-- Description Field -->
+          <div>
+            <label class="block text-sm font-medium text-white/80 mb-2"
+              >Description</label
+            >
+            <textarea
+              [(ngModel)]="taskData.description"
+              rows="3"
+              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-transparent backdrop-blur-sm transition-all duration-200 resize-none"
+              placeholder="Enter task description..."
+              [disabled]="isLoading"
+            ></textarea>
+          </div>
+
+          <!-- Priority and Status Row -->
+          <div class="grid grid-cols-2 gap-4">
+            <!-- Priority -->
+            <div>
+              <label class="block text-sm font-medium text-white/80 mb-2"
+                >Priority</label
+              >
+              <select
+                [(ngModel)]="taskData.priority"
+                class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-transparent backdrop-blur-sm transition-all duration-200"
+                [disabled]="isLoading"
+              >
+                <option value="low" class="bg-gray-800">Low</option>
+                <option value="medium" class="bg-gray-800">Medium</option>
+                <option value="high" class="bg-gray-800">High</option>
+              </select>
+            </div>
+
+            <!-- Status -->
+            <div>
+              <label class="block text-sm font-medium text-white/80 mb-2"
+                >Status</label
+              >
+              <select
+                [(ngModel)]="taskData.status"
+                class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-transparent backdrop-blur-sm transition-all duration-200"
+                [disabled]="isLoading"
+              >
+                <option value="pending" class="bg-gray-800">Pending</option>
+                <option value="in-progress" class="bg-gray-800">In Progress</option>
+                <option value="completed" class="bg-gray-800">Completed</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Due Date -->
+          <div>
+            <label class="block text-sm font-medium text-white/80 mb-2"
+              >Due Date</label
+            >
+            <input
+              type="date"
+              [(ngModel)]="taskData.dueDate"
+              class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-transparent backdrop-blur-sm transition-all duration-200"
+              [disabled]="isLoading"
+            />
+          </div>
+        </div>
+
+        <!-- View Mode -->
+        <div *ngIf="mode === 'view'" class="space-y-4">
+          <div class="bg-white/5 rounded-lg p-4 border border-white/10">
+            <h3 class="font-semibold text-white mb-2">{{ taskData.title }}</h3>
+            <p class="text-white/80 text-sm mb-4">{{ taskData.description }}</p>
+
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span class="text-white/60">Priority:</span>
+                <span
+                  class="ml-2 px-2 py-1 rounded-full text-xs font-medium"
+                  [ngClass]="getPriorityClass(taskData.priority)"
+                >
+                  {{ taskData.priority | titlecase }}
+                </span>
+              </div>
+              <div>
+                <span class="text-white/60">Status:</span>
+                <span
+                  class="ml-2 px-2 py-1 rounded-full text-xs font-medium"
+                  [ngClass]="getStatusClass(taskData.status)"
+                >
+                  {{ getStatusDisplay(taskData.status) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-4 border-t border-white/10">
+              <span class="text-white/60 text-sm">Due Date:</span>
+              <span class="ml-2 text-white text-sm">{{
+                formatDate(taskData.dueDate)
+              }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Delete Confirmation -->
+        <div *ngIf="mode === 'delete'" class="text-center">
+          <div
+            class="w-16 h-16 mx-auto mb-4 rounded-full bg-red-500/20 flex items-center justify-center"
+          >
+            <!-- Delete Icon -->
+            <svg
+              class="w-8 h-8 text-red-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+              />
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Delete Task</h3>
+          <p class="text-white/80 mb-4">
+            Are you sure you want to delete "<strong>{{ taskData.title }}</strong
+            >"? This action cannot be undone.
+          </p>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="relative px-6 py-4 border-t border-white/10 flex justify-end space-x-3">
+        <!-- Cancel Button -->
+        <button
+          (click)="closeModal()"
+          class="px-4 py-2 text-white/80 hover:text-white transition-colors duration-200"
+          [disabled]="isLoading"
+        >
+          Cancel
+        </button>
+
+        <!-- Action Button -->
+        <button
+          (click)="onActionClick()"
+          [disabled]="isLoading || !isFormValid()"
+          class="px-6 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-2"
+          [ngClass]="getActionButtonClass()"
+        >
+          <!-- Loading Spinner -->
+          <svg
+            *ngIf="isLoading"
+            class="animate-spin w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          <span>{{ getActionButtonText() }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

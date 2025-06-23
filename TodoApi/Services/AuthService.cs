@@ -21,7 +21,7 @@ namespace TodoApi.Services
         }
 
         //check if the user exits or not
-        public bool UserExists(string username) => _context.Users.Any(user=>user.Username.ToLower() == username.ToLower());
+        public bool UserExists(string email) => _context.Users.Any(user=>user.Email.ToLower() == email.ToLower());
 
         //create password hash
         public string CreatePasswordHash(string password)
@@ -41,7 +41,7 @@ namespace TodoApi.Services
         {
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
             Console.WriteLine("JWT_KEY: " + _configuration["JWT_KEY"]);
